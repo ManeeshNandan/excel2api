@@ -7,25 +7,40 @@ Excel2API turns spreadsheet rows into validated JSON and can optionally execute 
 ## Features
 
 - Excel and CSV input
+- Multi-sheet input
 - YAML-driven field mapping
-- Type conversion
-- Validation and constraints
+- Type conversion and validation
+- Required, nullable, default, length, numeric, regex, email and phone constraints
 - Transformations (`strip`, `uppercase`, `lowercase`)
 - JSON generation
 - REST API CREATE / UPDATE / PATCH / DELETE
+- Configurable endpoint templates
 - Dry-run mode
-- Bearer-token authentication
+- Bearer-token and custom-header authentication
 - Configurable request timeout
 - Retry with exponential backoff for transient HTTP failures
 - Optional retry for CREATE requests
+- Rate limiting
+- Batch processing
+- Resumable synchronization with checkpoints
+- Stop-on-error control
 - JSON and Excel sync reports
+- Validation error Excel reports
 - API response field mapping
 - Dependency-aware multi-sheet synchronization
 - Cross-sheet ID/reference resolution
-- Validation error Excel reports
+- Circular dependency detection
 - Control fields such as ID and Operation can stay in the spreadsheet without being sent to the API
+- Configuration-file driven jobs
+- `doctor` command for configuration validation
 
 ## Install
+
+```bash
+pip install excel2api
+```
+
+For development:
 
 ```bash
 pip install -e ".[dev]"
@@ -154,21 +169,6 @@ JSON Output       REST API Sync
 
 CRUD execution is intentionally separate from validation/conversion so the same core engine can be used for safe JSON generation without modifying remote data.
 
-## Development
-
-Run tests from the repository root:
-
-```bash
-PYTHONPATH=src python -m pytest -q
-```
-
-Build the package:
-
-```bash
-python -m pip install build
-python -m build
-```
-
 ## Multi-sheet dependencies
 
 Sheets can depend on other sheets. A successful API response can provide a value such as a newly created database ID to a dependent sheet.
@@ -195,19 +195,7 @@ sheets:
 
 Excel2API executes `Doctors` first, indexes successful API IDs by `doctor_code`, and injects the matching ID into `Patients.doctor_id` before validation and API execution. Circular dependencies are rejected.
 
-## Roadmap
-
-- UPSERT support
-- API key / custom-header authentication
-- Rate limiting
-- Batch processing
-- API response mapping
-- Idempotency-key support
-- Excel error report
-- Continue-on-error controls
-- Local mock API for end-to-end testing
-
-## Resumable synchronization (v0.4)
+## Resumable synchronization
 
 Large imports can be resumed without repeating successful rows:
 
@@ -229,7 +217,7 @@ excel2api sync patients.xlsx \
   --resume
 ```
 
-### Custom API headers
+## Custom API headers
 
 ```bash
 excel2api sync patients.xlsx \
@@ -238,9 +226,9 @@ excel2api sync patients.xlsx \
   --header "X-API-Key=YOUR_KEY"
 ```
 
-Multiple headers can be supplied. Bearer tokens can also be provided through `EXCEL2API_TOKEN`.
+Multiple headers can be supplied. Bearer tokens can also be provided through `EXCEL2API_TOKEN` or another environment variable configured in YAML.
 
-### Rate limiting and stop-on-error
+## Rate limiting and stop-on-error
 
 ```bash
 excel2api sync patients.xlsx \
@@ -251,7 +239,7 @@ excel2api sync patients.xlsx \
   --stop-on-error
 ```
 
-## API response mapping (v0.5)
+## API response mapping
 
 A schema can define response fields to extract into the sync report:
 
@@ -281,7 +269,7 @@ excel2api sync patients.xlsx \
   --error-report validation-errors.xlsx
 ```
 
-## Configuration file (v0.6)
+## Configuration file
 
 For repeatable jobs, API settings and sync behavior can be stored in YAML:
 
@@ -316,10 +304,9 @@ Run the complete job with:
 excel2api sync --config examples/excel2api.yaml
 ```
 
-CLI options override values from the configuration file. Keep secrets out of the YAML whenever possible; use `token_env` to read bearer tokens from environment variables.
+CLI options override values from the configuration file. Keep secrets out of YAML whenever possible; use `token_env` to read bearer tokens from environment variables.
 
-
-## Endpoint templates (v0.7)
+## Endpoint templates
 
 Use configurable endpoint templates when your API does not follow the default REST paths:
 
@@ -341,4 +328,53 @@ api:
       path: /patients/{id}
 ```
 
-Endpoint paths may use `{id}`, `{identifier}`, or fields from the API payload, such as `{department}`. CLI options continue to override configuration-file values.
+Endpoint paths may use `{id}`, `{identifier}`, or fields from the API payload, such as `{department}`.
+
+## CLI commands
+
+```text
+excel2api convert
+excel2api validate
+excel2api sync
+excel2api doctor
+```
+
+Check the installed version:
+
+```bash
+excel2api --version
+```
+
+## Development
+
+Run tests from the repository root:
+
+```bash
+PYTHONPATH=src python -m pytest -q
+```
+
+Run linting:
+
+```bash
+ruff check src tests
+```
+
+Build the package:
+
+```bash
+python -m pip install build
+python -m build
+```
+
+## Release
+
+Excel2API uses GitHub Actions for CI and PyPI publishing. Releases are published from version tags such as `v1.0.0` after configuring PyPI Trusted Publishing for the repository.
+
+## Roadmap
+
+- UPSERT with explicit existence checking and POST/PUT selection
+- API-key authentication as a first-class schema option
+- Idempotency-key support
+- Local mock API for end-to-end testing
+- Additional authentication mechanisms
+- Improved mapping expressions for nested API responses
