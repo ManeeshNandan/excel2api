@@ -1,0 +1,17 @@
+fields:
+  id:
+    column: ID
+    type: integer
+    include: false
+  operation:
+    column: Operation
+    type: string
+    include: false
+  doctor_name:
+    column: Doctor Name
+    type: string
+    required: true
+  specialty:
+    column: Specialty
+    type: string
+    required: true

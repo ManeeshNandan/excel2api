@@ -1,0 +1,32 @@
+input: examples/multi-sheet.xlsx
+api:
+  base_url: https://example.com/api
+  auth:
+    type: bearer
+    token_env: EXCEL2API_TOKEN
+  endpoints:
+    CREATE: {method: POST, path: /patients}
+    UPDATE: {method: PUT, path: /patients/{id}}
+    DELETE: {method: DELETE, path: /patients/{id}}
+  timeout: 30
+sync:
+  operation_field: operation
+  identifier_field: id
+  dry_run: true
+  report: multi-sheet-report.json
+
+sheets:
+  Patients:
+    schema: examples/patient-crud.yaml
+    endpoint: /patients
+    endpoints:
+      CREATE: {method: POST, path: ""}
+      UPDATE: {method: PUT, path: /{id}}
+      PATCH: {method: PATCH, path: /{id}}
+      DELETE: {method: DELETE, path: /{id}}
+  Doctors:
+    schema: examples/doctor.yaml
+    endpoint: /doctors
+    endpoints:
+      CREATE: {method: POST, path: ""}
+      UPDATE: {method: PUT, path: /{id}}

@@ -1,0 +1,42 @@
+fields:
+  id:
+    column: ID
+    type: integer
+    nullable: true
+    include: false
+  operation:
+    column: Operation
+    type: string
+    include: false
+  patient_name:
+    column: Patient Name
+    type: string
+    required: true
+    min_length: 3
+    transform: [strip]
+  date_of_birth:
+    column: DOB
+    type: date
+    required: true
+  phone:
+    column: Phone
+    type: phone
+    required: true
+  policy_number:
+    column: Policy Number
+    type: string
+    required: true
+  department:
+    column: Department
+    type: string
+    required: true
+  amount:
+    column: Amount
+    type: float
+    required: true
+
+response:
+  mapping:
+    api_id: id
+    api_status: status
+    api_message: message

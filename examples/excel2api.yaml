@@ -1,0 +1,39 @@
+input: patients-crud.xlsx
+schema: patient-response.yaml
+
+api:
+  base_url: https://example.com/api
+  endpoints:
+    CREATE:
+      method: POST
+      path: /patients
+    UPDATE:
+      method: PUT
+      path: /patients/{id}
+    PATCH:
+      method: PATCH
+      path: /patients/{id}
+    DELETE:
+      method: DELETE
+      path: /patients/{id}
+  auth:
+    type: bearer
+    token_env: PATIENT_API_TOKEN
+  timeout: 30
+  retries: 3
+  retry_create: false
+  rate_limit: 0.2
+  headers:
+    X-Client: excel2api
+
+sync:
+  operation_field: operation
+  identifier_field: id
+  batch_size: 100
+  checkpoint: sync.checkpoint.json
+  resume: false
+  stop_on_error: false
+  dry_run: true
+  report: sync-report.json
+  excel_report: sync-results.xlsx
+  error_report: validation-errors.xlsx

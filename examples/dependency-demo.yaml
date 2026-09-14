@@ -1,0 +1,26 @@
+input: examples/dependency-demo.xlsx
+api:
+  base_url: https://example.com/api
+  auth:
+    type: bearer
+    token_env: EXCEL2API_TOKEN
+  timeout: 30
+sync:
+  dry_run: true
+  report: dependency-report.json
+sheets:
+  Doctors:
+    schema: examples/doctor-dependency.yaml
+    endpoint: /doctors
+    response:
+      mapping:
+        api_id: id
+  Patients:
+    schema: examples/patient-dependency.yaml
+    endpoint: /patients
+    references:
+      - target_field: doctor_id
+        source_sheet: Doctors
+        source_key: doctor_code
+        target_key: doctor_code
+        source_value: api_id

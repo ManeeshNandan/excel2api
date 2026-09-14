@@ -1,0 +1,13 @@
+fields:
+  patient_name:
+    column: Patient Name
+    type: string
+    required: true
+  doctor_code:
+    column: Doctor Code
+    type: string
+    required: true
+  doctor_id:
+    column: Doctor ID
+    type: integer
+    required: true

@@ -1,0 +1,13 @@
+fields:
+  doctor_code:
+    column: Doctor Code
+    type: string
+    required: true
+  doctor_name:
+    column: Doctor Name
+    type: string
+    required: true
+  specialty:
+    column: Specialty
+    type: string
+    required: true

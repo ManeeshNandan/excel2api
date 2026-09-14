@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "excel2api"
+version = "1.0.0"
+description = "Convert Excel and CSV data into validated, API-ready JSON"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Maneesh Nandan" }]
+dependencies = [
+    "pandas>=2.0",
+    "openpyxl>=3.1",
+    "PyYAML>=6.0",
+    "typer>=0.12",
+    "requests>=2.31"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+excel2api = "excel2api.cli:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/excel2api"]
